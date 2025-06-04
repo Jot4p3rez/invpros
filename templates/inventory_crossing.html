@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Crossing - Unicomer WMS</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-500: #6b7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f9fafb;
+            color: var(--gray-900);
+            line-height: 1.5;
+        }
+
+        /* Header Styles */
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--gray-900);
+            font-size: 18px;
+        }
+
+        .logo-icon {
+            font-size: 24px;
+        }
+
+        .nav {
+            display: flex;
+            gap: 16px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            color: var(--gray-500);
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            background-color: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            background-color: #eff6ff;
+        }
+
+        .nav-item i {
+            font-size: 16px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--gray-700);
+        }
+
+        /* Main Content */
+        .main-container {
+            display: flex;
+            min-height: calc(100vh - 64px);
+        }
+
+        .sidebar {
+            width: 240px;
+            background: white;
+            border-right: 1px solid var(--gray-200);
+            padding: 24px 0;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-item {
+            padding: 10px 24px;
+            font-size: 14px;
+            color: var(--gray-700);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .sidebar-item:hover {
+            background-color: var(--gray-100);
+        }
+
+        .sidebar-item.active {
+            background-color: #eff6ff;
+            color: var(--primary);
+            border-left: 3px solid var(--primary);
+        }
+
+        .sidebar-item i {
+            width: 24px;
+            text-align: center;
+            margin-right: 8px;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 32px;
+            max-width: 1200px;
+        }
+
+        /* Section Styles */
+        .section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            margin-bottom: 24px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .section-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .section-subtitle {
+            color: var(--gray-500);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .section-content {
+            padding: 24px;
+        }
+
+        /* Form Styles */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .form-section {
+            margin-bottom: 32px;
+        }
+
+        .form-section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-section-title i {
+            color: var(--gray-500);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--gray-200);
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .file-input-container {
+            position: relative;
+        }
+
+        .file-input-container .form-control {
+            padding-right: 40px;
+        }
+
+        .file-loaded {
+            position: absolute;
+            right: 12px;
+            top: 38px;
+            color: var(--success);
+            font-size: 18px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .file-loaded.show {
+            opacity: 1;
+        }
+
+        .form-note {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-top: 6px;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-light);
+        }
+
+        .btn-primary:disabled {
+            background-color: var(--gray-500);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .btn-lg {
+            padding: 12px 24px;
+            font-size: 15px;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Results Section */
+        .results-container {
+            margin-top: 32px;
+            display: none;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .results-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .download-btn {
+            background-color: var(--success);
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .download-btn:hover {
+            background-color: #059669;
+        }
+
+        .results-log {
+            background-color: var(--gray-100);
+            border-radius: 6px;
+            padding: 16px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid var(--gray-200);
+        }
+
+        /* Alert Styles */
+        .alert {
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .alert-danger {
+            background-color: #fee2e2;
+            color: var(--danger);
+            border: 1px solid #fecaca;
+        }
+
+        .alert-danger i {
+            font-size: 18px;
+            margin-top: 2px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 200px;
+            }
+            
+            .main-content {
+                padding: 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--gray-200);
+                padding: 0;
+            }
+            
+            .sidebar-menu {
+                display: flex;
+                overflow-x: auto;
+            }
+            
+            .sidebar-item {
+                white-space: nowrap;
+                border-bottom: 3px solid transparent;
+                border-left: none;
+                padding: 12px 16px;
+            }
+            
+            .sidebar-item.active {
+                border-bottom-color: var(--primary);
+                border-left: none;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <div class="logo">
+                <span class="logo-icon">🏢</span>
+                <span>Unicomer WMS</span>
+            </div>
+            <div class="nav">
+                <a href="#" class="nav-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+                <a href="#" class="nav-item active">
+                    <i class="fas fa-exchange-alt"></i>
+                    Inventory
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-file-alt"></i>
+                    Reports
+                </a>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="user-info">
+                <div class="user-avatar">JP</div>
+                <span>Jose Perez</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item active">
+                    <i class="fas fa-exchange-alt"></i>
+                    Inventory Crossing
+                </li>
+                <li class="sidebar-item">
+                    <i class="fas fa-chart-line"></i>
+                    Analytics
+                </li>
+                <li class="sidebar-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="section">
+                <div class="section-header">
+                    <h1 class="section-title">Inventory Crossing</h1>
+                    <p class="section-subtitle">Cross-reference WMS and ERP inventory reports</p>
+                </div>
+                <div class="section-content">
+                    <form id="inventoryForm" enctype="multipart/form-data">
+                        <!-- File Upload Section -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">
+                                <i class="fas fa-file-upload"></i>
+                                File Upload
+                            </h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="wmsFile" class="form-label">WMS Inventory File</label>
+                                    <div class="file-input-container">
+                                        <input type="file" class="form-control" id="wmsFile" required accept=".xlsx,.xls">
+                                        <i class="fas fa-check-circle file-loaded"></i>
+                                    </div>
+                                    <p class="form-note">Excel file with WMS inventory data</p>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="upcFile" class="form-label">Item Master File</label>
+                                    <div class="file-input-container">
+                                        <input type="file" class="form-control" id="upcFile" required accept=".xlsx,.xls">
+                                        <i class="fas fa-check-circle file-loaded"></i>
+                                    </div>
+                                    <p class="form-note">Excel file with UPC/SKU mappings</p>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="erpFile" class="form-label">ERP Inventory File</label>
+                                    <div class="file-input-container">
+                                        <input type="file" class="form-control" id="erpFile" required accept=".xlsx,.xls">
+                                        <i class="fas fa-check-circle file-loaded"></i>
+                                    </div>
+                                    <p class="form-note">Excel file with ERP inventory data</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- WMS Configuration Section -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">
+                                <i class="fas fa-cog"></i>
+                                WMS Configuration
+                            </h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="wmsSheet" class="form-label">Sheet Name</label>
+                                    <input type="text" class="form-control" id="wmsSheet" value="Sheet1">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="wmsItemCol" class="form-label">UPC Column</label>
+                                    <input type="text" class="form-control" id="wmsItemCol" value="Item">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="wmsStockCol" class="form-label">Stock Column</label>
+                                    <input type="text" class="form-control" id="wmsStockCol" value="On Hand">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- UPC Configuration Section -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">
+                                <i class="fas fa-barcode"></i>
+                                Item Configuration
+                            </h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="upcSkuCol" class="form-label">SKU Column</label>
+                                    <input type="text" class="form-control" id="upcSkuCol" value="SKU">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="upcBusr8Col" class="form-label">"SKU for ERP" Column</label>
+                                    <input type="text" class="form-control" id="upcBusr8Col" value="BUSR8">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ERP Configuration Section -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">
+                                <i class="fas fa-database"></i>
+                                ERP Configuration
+                            </h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="erpSheet" class="form-label">Sheet Name</label>
+                                    <input type="text" class="form-control" id="erpSheet" value="Sheet1">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="erpSkuCol" class="form-label">SKU Column</label>
+                                    <input type="text" class="form-control" id="erpSkuCol" value="Sku">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="erpStockCol" class="form-label">Stock Column</label>
+                                    <input type="text" class="form-control" id="erpStockCol" value="Stock On Hand">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 32px;">
+                            <button type="submit" class="btn btn-primary btn-lg" id="processBtn" disabled>
+                                <span id="processText">Process Inventory</span>
+                                <span id="processSpinner" class="spinner"></span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Results Container -->
+                    <div class="results-container" id="resultsContainer">
+                        <div class="results-header">
+                            <h3 class="results-title">Processing Results</h3>
+                            <a href="#" class="download-btn" id="downloadReport">
+                                <i class="fas fa-file-excel"></i>
+                                Download Report
+                            </a>
+                        </div>
+                        <div class="results-log" id="processLog"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Custom JS -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('inventoryForm');
+        const processBtn = document.getElementById('processBtn');
+        const processText = document.getElementById('processText');
+        const processSpinner = document.getElementById('processSpinner');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const processLog = document.getElementById('processLog');
+        const downloadReport = document.getElementById('downloadReport');
+        
+        // File inputs and checkmarks
+        const wmsFileInput = document.getElementById('wmsFile');
+        const upcFileInput = document.getElementById('upcFile');
+        const erpFileInput = document.getElementById('erpFile');
+        const checkmarks = document.querySelectorAll('.file-loaded');
+        
+        // Initially hide all checkmarks
+        checkmarks.forEach(check => check.classList.remove('show'));
+        
+        // Check if all files are selected
+        function checkFiles() {
+            const allFilesSelected = wmsFileInput.files.length > 0 && 
+                                  upcFileInput.files.length > 0 && 
+                                  erpFileInput.files.length > 0;
+            
+            // Update checkmarks
+            if (wmsFileInput.files.length > 0) {
+                wmsFileInput.parentNode.querySelector('.file-loaded').classList.add('show');
+            } else {
+                wmsFileInput.parentNode.querySelector('.file-loaded').classList.remove('show');
+            }
+            
+            if (upcFileInput.files.length > 0) {
+                upcFileInput.parentNode.querySelector('.file-loaded').classList.add('show');
+            } else {
+                upcFileInput.parentNode.querySelector('.file-loaded').classList.remove('show');
+            }
+            
+            if (erpFileInput.files.length > 0) {
+                erpFileInput.parentNode.querySelector('.file-loaded').classList.add('show');
+            } else {
+                erpFileInput.parentNode.querySelector('.file-loaded').classList.remove('show');
+            }
+            
+            // Enable/disable button
+            processBtn.disabled = !allFilesSelected;
+        }
+        
+        // Listen for file changes
+        wmsFileInput.addEventListener('change', checkFiles);
+        upcFileInput.addEventListener('change', checkFiles);
+        erpFileInput.addEventListener('change', checkFiles);
+        
+        // Form submission
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show loading state
+            processBtn.disabled = true;
+            processText.textContent = "Processing...";
+            processSpinner.style.display = 'block';
+            resultsContainer.style.display = 'none';
+            
+            // Show processing alert
+            Swal.fire({
+                title: 'Processing Inventory',
+                html: 'Please wait while we cross-reference your inventory files...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+                background: 'white',
+                backdrop: 'rgba(0,0,0,0.4)'
+            });
+            
+            // Create FormData
+            const formData = new FormData();
+            
+            // Add files
+            formData.append('wmsFile', wmsFileInput.files[0]);
+            formData.append('upcFile', upcFileInput.files[0]);
+            formData.append('erpFile', erpFileInput.files[0]);
+            
+            // Add configurations
+            formData.append('wmsSheet', document.getElementById('wmsSheet').value);
+            formData.append('wmsItemCol', document.getElementById('wmsItemCol').value);
+            formData.append('wmsStockCol', document.getElementById('wmsStockCol').value);
+            formData.append('upcSkuCol', document.getElementById('upcSkuCol').value);
+            formData.append('upcBusr8Col', document.getElementById('upcBusr8Col').value);
+            formData.append('erpSheet', document.getElementById('erpSheet').value);
+            formData.append('erpSkuCol', document.getElementById('erpSkuCol').value);
+            formData.append('erpStockCol', document.getElementById('erpStockCol').value);
+            
+            // REAL API CALL
+            fetch('/api/process-inventory', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                Swal.close();
+                
+                if (data.success) {
+                    // Show results in container
+                    processLog.textContent = data.log;
+                    resultsContainer.style.display = 'block';
+                    
+                    // Set up download link
+                    if (data.report_filename) {
+                        downloadReport.href = `/api/download-report/${data.report_filename}`;
+                        downloadReport.onclick = null;
+                        downloadReport.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            window.location.href = this.href;
+                        });
+                    } else {
+                        downloadReport.href = '#';
+                        downloadReport.onclick = function(e) {
+                            e.preventDefault();
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Report file not found',
+                                icon: 'error'
+                            });
+                        };
+                    }
+                    
+                    // Show success alert
+                    Swal.fire({
+                        title: 'Process Completed',
+                        html: `Inventory crossing completed successfully.`,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                } else {
+                    // Show error in results container
+                    processLog.textContent = data.error || 'Unknown error occurred';
+                    resultsContainer.style.display = 'block';
+                    
+                    Swal.fire({
+                        title: 'Processing Error',
+                        text: data.error || 'An error occurred during processing',
+                        icon: 'error'
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.close();
+                
+                // Show error in results container
+                processLog.textContent = error.message;
+                resultsContainer.style.display = 'block';
+                
+                Swal.fire({
+                    title: 'Connection Error',
+                    text: error.message,
+                    icon: 'error'
+                });
+            })
+            .finally(() => {
+                // Reset button
+                processText.textContent = "Process Inventory";
+                processSpinner.style.display = 'none';
+                checkFiles();
+            });
+        });
+    });
+    </script>
+</body>
+</html> 

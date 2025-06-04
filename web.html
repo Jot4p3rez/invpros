@@ -1,0 +1,107 @@
+<!-- inventory_crossing.html -->
+<div class="module-container">
+    <h2><i class="fas fa-boxes"></i> Inventory Crossing Processor</h2>
+
+    <div class="card">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs" id="inventoryTabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="process-tab" data-toggle="tab" href="#process" role="tab">New
+                        Process</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="history-tab" data-toggle="tab" href="#history" role="tab">Historial</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="config-tab" data-toggle="tab" href="#config" role="tab">Configuration</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card-body">
+            <div class="tab-content" id="inventoryTabsContent">
+                <div class="tab-pane fade show active" id="process" role="tabpanel">
+                    <form id="inventoryForm" enctype="multipart/form-data">
+                        <!-- Sección 1: Archivos -->
+                        <div class="form-section">
+                            <h4>1. File Selection</h4>
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label for="wmsFile"> WMS file</label>
+                                    <input type="file" class="form-control-file" id="wmsFile" required>
+                                    <small class="form-text text-muted">Inventory balance WMS.xlsx</small>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="upcFile">Item Master WMS</label>
+                                    <input type="file" class="form-control-file" id="upcFile" required>
+                                    <small class="form-text text-muted">Items WMS.xlsx</small>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="erpFile">ERP file<< /label>
+                                            <input type="file" class="form-control-file" id="erpFile" required>
+                                            <small class="form-text text-muted">Inventory Report ERP.xlsx</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sección 2: Configuración WMS -->
+                        <div class="form-section">
+                            <h4>2. WMS file configuration</h4>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="wmsSheet">Excel sheet name</label>
+                                    <input type="text" class="form-control" id="wmsSheet" value="Sheet1">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="wmsItemCol">Item column</label>
+                                    <input type="text" class="form-control" id="wmsItemCol" value="Item">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="wmsStockCol">Stock Column</label>
+                                    <input type="text" class="form-control" id="wmsStockCol" value="On Hand">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Secciones 3-5 similares a la GUI existente -->
+                        <button type="submit" class="btn btn-primary" id="processBtn">
+                            <span id="processText">Inventory Processing</span>
+                            <span id="processSpinner" class="spinner-border spinner-border-sm d-none"
+                                role="status"></span>
+                        </button>
+                    </form>
+
+                    <div id="resultsContainer" class="mt-4 d-none">
+                        <h4>Process Results</h4>
+                        <div class="alert alert-info" id="processLog"></div>
+                        <a href="#" class="btn btn-success d-none" id="downloadReport">Download Report</a>
+                    </div>
+                </div>
+
+                <!-- Pestaña de Historial -->
+                <div class="tab-pane fade" id="history" role="tabpanel">
+                    <table class="table table-striped table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Date</th>
+                                <th>WMS file</th>
+                                <th>ERP file</th>
+                                <th>Result</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTable">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tab-pane fade" id="config" role="tabpanel">
+                    <form id="configForm">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
